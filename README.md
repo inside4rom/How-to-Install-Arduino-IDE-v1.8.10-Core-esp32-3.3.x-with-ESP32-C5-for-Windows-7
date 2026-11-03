@@ -1,92 +1,92 @@
-# ESP32-C5 / ESP32-S3 РЅР° Windows 7 вЂ” Arduino IDE 1.8.10 + СЏРґСЂРѕ esp32 3.3.x
+# ESP32-C5 / ESP32-S3 на Windows 7 — Arduino IDE 1.8.10 + ядро esp32 3.3.x
 
-РџРѕС€Р°РіРѕРІР°СЏ РёРЅСЃС‚СЂСѓРєС†РёСЏ, РєР°Рє Р·Р°СЃС‚Р°РІРёС‚СЊ РєРѕРјРїРёР»РёСЂРѕРІР°С‚СЊСЃСЏ СЏРґСЂРѕ **esp32 3.3.x**
-(РїРµСЂРІР°СЏ РІРµС‚РєР° СЃ РїРѕРґРґРµСЂР¶РєРѕР№ ESP32-C5) РЅР° **Windows 7 SP1 x64** РІ Arduino IDE 1.8.10.
-РџСЂРѕРІРµСЂРµРЅРѕ РЅР° СЏРґСЂРµ 3.3.5 (esptool 5.1.0), РїР»Р°С‚С‹ ESP32-S3 Zero Рё ESP32-C5.
+Пошаговая инструкция, как заставить компилироваться ядро **esp32 3.3.x**
+(первая ветка с поддержкой ESP32-C5) на **Windows 7 SP1 x64** в Arduino IDE 1.8.10.
+Проверено на ядре 3.3.5 (esptool 5.1.0), платы ESP32-S3 Zero и ESP32-C5.
 
-## РџСЂРѕР±Р»РµРјР°
+## Проблема
 
-РќР°С‡РёРЅР°СЏ СЃ СЏРґСЂР° esp32 3.3.x Espressif РїРѕСЃС‚Р°РІР»СЏРµС‚ `esptool.exe`, `espefuse.exe`,
-`espsecure.exe`, СЃРѕР±СЂР°РЅРЅС‹Рµ PyInstaller'РѕРј РЅР° **Python 3.13**. Python ? 3.9
-РѕС„РёС†РёР°Р»СЊРЅРѕ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ Windows 7, РїРѕСЌС‚РѕРјСѓ Р»СЋР±РѕР№ РІС‹Р·РѕРІ РїР°РґР°РµС‚:
+Начиная с ядра esp32 3.3.x Espressif поставляет `esptool.exe`, `espefuse.exe`,
+`espsecure.exe`, собранные PyInstaller'ом на **Python 3.13**. Python ? 3.9
+официально не поддерживает Windows 7, поэтому любой вызов падает:
 
     [PYI-xxxx:ERROR] Failed to load Python DLL '...\_MEIxxxx\python313.dll'
 
-РљРѕРјРїРёР»СЏС†РёСЏ РѕР±СЂС‹РІР°РµС‚СЃСЏ РЅР° РіРµРЅРµСЂР°С†РёРё `bootloader.bin`. РћС‚РєР°С‚РёС‚СЊСЃСЏ РЅР° СЏРґСЂРѕ 3.1.3,
-РіРґРµ esptool СЂР°Р±РѕС‚Р°РµС‚, РЅРµР»СЊР·СЏ вЂ” С‚Р°Рј РЅРµС‚ ESP32-C5.
+Компиляция обрывается на генерации `bootloader.bin`. Откатиться на ядро 3.1.3,
+где esptool работает, нельзя — там нет ESP32-C5.
 
-| РЇРґСЂРѕ | esptool | Р Р°Р±РѕС‚Р°РµС‚ РЅР° Win7 | ESP32-C5 |
+| Ядро | esptool | Работает на Win7 | ESP32-C5 |
 |---|---|---|---|
-| 3.1.3 | 4.9.dev3 | РґР° | РЅРµС‚ |
-| 3.3.5 | 5.1.0 (Python 3.13) | РЅРµС‚ | РґР° |
-| 3.3.12 | 5.3.1 (Python 3.13) | РЅРµС‚ | РґР° |
+| 3.1.3 | 4.9.dev3 | да | нет |
+| 3.3.5 | 5.1.0 (Python 3.13) | нет | да |
+| 3.3.12 | 5.3.1 (Python 3.13) | нет | да |
 
-## Р РµС€РµРЅРёРµ
+## Решение
 
-РџРѕСЃС‚Р°РІРёС‚СЊ **РЅРµРѕС„РёС†РёР°Р»СЊРЅС‹Р№ РїР°С‚С‡РµРЅРЅС‹Р№ Python 3.11 РґР»СЏ Win7**, СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РІ РЅРµРіРѕ
-esptool РЅСѓР¶РЅРѕР№ РІРµСЂСЃРёРё Рё РїРѕРґРјРµРЅРёС‚СЊ С‚СЂРё exe РІ РїР°РїРєРµ СЏРґСЂР° РЅР° pip-Р»Р°СѓРЅС‡РµСЂС‹
-(РјР°Р»РµРЅСЊРєРёРµ exe ~108 РљР‘, РєРѕС‚РѕСЂС‹Рµ РІС‹Р·С‹РІР°СЋС‚ `C:\Python311\python.exe -m esptool`).
-РЇРґСЂРѕ Arduino РїСЂРё СЌС‚РѕРј РЅРµ С‚СЂРѕРіР°РµРј, `platform.txt` РЅРµ РїСЂР°РІРёРј.
+Поставить **неофициальный патченный Python 3.11 для Win7**, установить в него
+esptool нужной версии и подменить три exe в папке ядра на pip-лаунчеры
+(маленькие exe ~108 КБ, которые вызывают `C:\Python311\python.exe -m esptool`).
+Ядро Arduino при этом не трогаем, `platform.txt` не правим.
 
 ---
 
-## РўСЂРµР±РѕРІР°РЅРёСЏ
+## Требования
 
-- Windows 7 SP1 x64, Arduino IDE 1.8.x (РїСЂРѕРІРµСЂРµРЅРѕ РЅР° 1.8.10)
-- ~3 Р“Р‘ РјРµСЃС‚Р° РїРѕРґ СЏРґСЂРѕ esp32
-- РРЅС‚РµСЂРЅРµС‚ РЅР° СЌС‚РѕР№ РјР°С€РёРЅРµ РёР»Рё Р»СЋР±РѕР№ РґСЂСѓРіРѕР№ РџРљ СЃ Python ? 3.8 (РґР»СЏ СЃРєР°С‡РёРІР°РЅРёСЏ РїР°РєРµС‚РѕРІ)
-- Р РµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ (РЅРµ РїСЂРѕРІРµСЂСЏР»РѕСЃСЊ, РѕР±С‹С‡РЅРѕ СѓР¶Рµ СЃС‚РѕРёС‚): KB2999226 (UCRT),
-  KB2533623, KB4474419 (SHA-2), VC++ Redistributable 2015вЂ“2022 x64.
-  Р•СЃР»Рё `python.exe` РЅРµ СЃС‚Р°СЂС‚СѓРµС‚ СЃ РѕС€РёР±РєРѕР№ РїСЂРѕ `python311.dll` вЂ” СЃС‚Р°РІРёС‚СЊ РёС….
+- Windows 7 SP1 x64, Arduino IDE 1.8.x (проверено на 1.8.10)
+- ~3 ГБ места под ядро esp32
+- Интернет на этой машине или любой другой ПК с Python ? 3.8 (для скачивания пакетов)
+- Рекомендуется (не проверялось, обычно уже стоит): KB2999226 (UCRT),
+  KB2533623, KB4474419 (SHA-2), VC++ Redistributable 2015–2022 x64.
+  Если `python.exe` не стартует с ошибкой про `python311.dll` — ставить их.
 
-## Р§С‚Рѕ СЃРєР°С‡РёРІР°РµРј
+## Что скачиваем
 
-| Р¤Р°Р№Р» | РћС‚РєСѓРґР° | Р—Р°С‡РµРј |
+| Файл | Откуда | Зачем |
 |---|---|---|
-| `python-3.11.18-amd64-full.exe` | https://github.com/adang1345/PythonWin7/releases/download/v3.11.18/python-3.11.18-amd64-full.exe (С‚Р° Р¶Рµ СЃР±РѕСЂРєР° РµСЃС‚СЊ РІ СЂРµРїРѕР·РёС‚РѕСЂРёРё PythonVista) | Python 3.11 СЃ РїРѕРґРјРµРЅС‘РЅРЅС‹РјРё Win8+ API (`api-ms-win-core-path-l1-1-0.dll` Рё РґСЂ.) |
-| `esptool-5.1.0.tar.gz` | https://files.pythonhosted.org/packages/c2/03/d7d79a77dd787dbe6029809c5f81ad88912340a131c88075189f40df3aba/esptool-5.1.0.tar.gz | РЎР°Рј esptool. РќР° PyPI РµСЃС‚СЊ **С‚РѕР»СЊРєРѕ** sdist, wheel РЅРµС‚ |
-| 21 С„Р°Р№Р» `*.whl` | pypi.org С‡РµСЂРµР· `pip download` (СЃРїРёСЃРѕРє РЅРёР¶Рµ) | Р—Р°РІРёСЃРёРјРѕСЃС‚Рё esptool РїРѕРґ Python 3.11 x64 |
-| РЇРґСЂРѕ esp32 **3.3.5** | РњРµРЅРµРґР¶РµСЂ РїР»Р°С‚ Arduino IDE | РџРѕРґРґРµСЂР¶РєР° C5; РІРµСЂСЃРёСЏ esptool РІРёРґРЅР° РІ РїСѓС‚Рё `esptool_py\5.1.0` |
+| `python-3.11.18-amd64-full.exe` | https://github.com/adang1345/PythonWin7/releases/download/v3.11.18/python-3.11.18-amd64-full.exe (та же сборка есть в репозитории PythonVista) | Python 3.11 с подменёнными Win8+ API (`api-ms-win-core-path-l1-1-0.dll` и др.) |
+| `esptool-5.1.0.tar.gz` | https://files.pythonhosted.org/packages/c2/03/d7d79a77dd787dbe6029809c5f81ad88912340a131c88075189f40df3aba/esptool-5.1.0.tar.gz | Сам esptool. На PyPI есть **только** sdist, wheel нет |
+| 21 файл `*.whl` | pypi.org через `pip download` (список ниже) | Зависимости esptool под Python 3.11 x64 |
+| Ядро esp32 **3.3.5** | Менеджер плат Arduino IDE | Поддержка C5; версия esptool видна в пути `esptool_py\5.1.0` |
 
-Р’РµСЂСЃРёСЏ esptool РґРѕР»Р¶РЅР° СЃРѕРІРїР°РґР°С‚СЊ СЃ РїР°РїРєРѕР№ `packages\esp32\tools\esptool_py\<РІРµСЂСЃРёСЏ>`
-РІР°С€РµРіРѕ СЏРґСЂР° (3.3.12 > 5.3.1).
+Версия esptool должна совпадать с папкой `packages\esp32\tools\esptool_py\<версия>`
+вашего ядра (3.3.12 > 5.3.1).
 
 ---
 
-## РЁР°Рі 1. РџР°С‚С‡РµРЅРЅС‹Р№ Python 3.11
+## Шаг 1. Патченный Python 3.11
 
-1. РЈСЃС‚Р°РЅРѕРІРёС‚СЊ `python-3.11.18-amd64-full.exe` РІ **`C:\Python311`**
-   (РїСѓС‚СЊ Р±РµР· РїСЂРѕР±РµР»РѕРІ Рё РєРёСЂРёР»Р»РёС†С‹; РїРѕС‚РѕРј РѕРЅ Р·Р°С€РёРІР°РµС‚СЃСЏ РІ Р»Р°СѓРЅС‡РµСЂС‹ вЂ” РЅРµ РїРµСЂРµРЅРѕСЃРёС‚СЊ).
-2. Р“Р°Р»РѕС‡РєСѓ **В«Add Python to PATHВ» РќР• СЃС‚Р°РІРёС‚СЊ** вЂ” РІСЃРµ РєРѕРјР°РЅРґС‹ РЅРёР¶Рµ РёРґСѓС‚ РїРѕ РїРѕР»РЅРѕРјСѓ
-   РїСѓС‚Рё, Р° РІС‚РѕСЂРѕР№ Python РІ PATH С‚РѕР»СЊРєРѕ РјРµС€Р°РµС‚.
-3. РџСЂРѕРІРµСЂРєР°:
+1. Установить `python-3.11.18-amd64-full.exe` в **`C:\Python311`**
+   (путь без пробелов и кириллицы; потом он зашивается в лаунчеры — не переносить).
+2. Галочку **«Add Python to PATH» НЕ ставить** — все команды ниже идут по полному
+   пути, а второй Python в PATH только мешает.
+3. Проверка:
 
        C:\Python311\python.exe -V
        :: Python 3.11.18
        C:\Python311\python.exe -m pip --version
        :: pip 24.0 from C:\Python311\Lib\site-packages\pip (python 3.11)
 
-## РЁР°Рі 2. РЇРґСЂРѕ esp32 3.3.5
+## Шаг 2. Ядро esp32 3.3.5
 
-1. Р¤Р°Р№Р» > РќР°СЃС‚СЂРѕР№РєРё > Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ СЃСЃС‹Р»РєРё РґР»СЏ РњРµРЅРµРґР¶РµСЂР° РїР»Р°С‚:
+1. Файл > Настройки > Дополнительные ссылки для Менеджера плат:
    `https://espressif.github.io/arduino-esp32/package_esp32_index.json`
-2. РРЅСЃС‚СЂСѓРјРµРЅС‚С‹ > РџР»Р°С‚Р° > РњРµРЅРµРґР¶РµСЂ РїР»Р°С‚ > `esp32 by Espressif Systems` > РІРµСЂСЃРёСЏ **3.3.5** > РЈСЃС‚Р°РЅРѕРІРёС‚СЊ.
-3. РљРѕРјРїРёР»СЏС†РёСЏ РЅР° СЌС‚РѕРј СЌС‚Р°РїРµ РїР°РґР°РµС‚ СЃ `PYI-xxxx ... python313.dll` вЂ” СЌС‚Рѕ РѕР¶РёРґР°РµРјРѕ.
+2. Инструменты > Плата > Менеджер плат > `esp32 by Espressif Systems` > версия **3.3.5** > Установить.
+3. Компиляция на этом этапе падает с `PYI-xxxx ... python313.dll` — это ожидаемо.
 
-## РЁР°Рі 3. РЎРєР°С‡РёРІР°РЅРёРµ РїР°РєРµС‚РѕРІ (РЅР° РјР°С€РёРЅРµ СЃ РёРЅС‚РµСЂРЅРµС‚РѕРј)
+## Шаг 3. Скачивание пакетов (на машине с интернетом)
 
-РќСѓР¶РµРЅ Р»СЋР±РѕР№ Python ? 3.8 СЃ pip ? 23. РџР°РїРєР° РЅР°Р·РЅР°С‡РµРЅРёСЏ вЂ” `C:\esptool_pack`.
+Нужен любой Python ? 3.8 с pip ? 23. Папка назначения — `C:\esptool_pack`.
 
-> РќР° РїР°С‚С‡РµРЅРЅРѕРј Python 3.11 РїРѕРґ Win7 `pip download` РјРѕР¶РµС‚ РїР°РґР°С‚СЊ СЃ
-> `WinError 10051` (СЃРµС‚СЊ). РўРѕРіРґР° РєР°С‡Р°С‚СЊ РґСЂСѓРіРёРј Python (Сѓ РјРµРЅСЏ СѓР¶Рµ Р±С‹Р» вЂ” 3.8 РЅР° С‚РѕР№ Р¶Рµ
-> РјР°С€РёРЅРµ) .
+> На патченном Python 3.11 под Win7 `pip download` может падать с
+> `WinError 10051` (сеть). Тогда качать другим Python (у меня уже был — 3.8 на той же
+> машине) .
 
     python -m pip install --upgrade pip
 
-    :: esptool вЂ” С‚РѕР»СЊРєРѕ sdist (СЃ --only-binary pip РѕС‚РІРµС‚РёС‚ "from versions: none")
+    :: esptool — только sdist (с --only-binary pip ответит "from versions: none")
     python -m pip download esptool==5.1.0 --no-deps --no-binary :all: -d C:\esptool_pack
 
-    :: Р·Р°РІРёСЃРёРјРѕСЃС‚Рё вЂ” wheel РїРѕРґ Python 3.11 x64
+    :: зависимости — wheel под Python 3.11 x64
     python -m pip download "pyserial>=3.3" "cryptography<42" "ecdsa>=0.16" ^
       "reedsolo>=1.5.3,<1.8" "PyYAML>=5.1" intelhex "bitstring>=3.1.6" ^
       "click<8.2" rich-click "argcomplete>=3" pyelftools ^
@@ -94,7 +94,7 @@ esptool РЅСѓР¶РЅРѕР№ РІРµСЂСЃРёРё Рё РїРѕРґРјРµРЅРёС‚СЊ С‚СЂРё exe РІ РїР°РїРєРµ
       --abi cp311 --abi abi3 --abi none --platform win_amd64 --platform any ^
       --only-binary=:all:
 
-РЎРѕРґРµСЂР¶РёРјРѕРµ `C:\esptool_pack` (РІРµСЂСЃРёРё РјРѕРіСѓС‚ Р±С‹С‚СЊ РЅРѕРІРµРµ вЂ” РЅРѕСЂРјР°Р»СЊРЅРѕ):
+Содержимое `C:\esptool_pack` (версии могут быть новее — нормально):
 
     esptool-5.1.0.tar.gz
     pyserial-3.5-py2.py3-none-any.whl          cryptography-41.0.7-cp37-abi3-win_amd64.whl
@@ -109,12 +109,12 @@ esptool РЅСѓР¶РЅРѕР№ РІРµСЂСЃРёРё Рё РїРѕРґРјРµРЅРёС‚СЊ С‚СЂРё exe РІ РїР°РїРєРµ
     six-1.17.0-py2.py3-none-any.whl            typing_extensions-4.16.0-py3-none-any.whl
     colorama-0.4.6-py2.py3-none-any.whl
 
-Р‘РµР· pip РјРѕР¶РЅРѕ СЃРєР°С‡Р°С‚СЊ С‚Рѕ Р¶Рµ СЃР°РјРѕРµ Р±СЂР°СѓР·РµСЂРѕРј: `https://pypi.org/project/<РёРјСЏ>/<РІРµСЂСЃРёСЏ>/#files`.
+Без pip можно скачать то же самое браузером: `https://pypi.org/project/<имя>/<версия>/#files`.
 
-## РЁР°Рі 4. РЈСЃС‚Р°РЅРѕРІРєР° РІ Python 3.11 (РѕС„Р»Р°Р№РЅ)
+## Шаг 4. Установка в Python 3.11 (офлайн)
 
-`install_esptool.bat` вЂ” **СЃРѕС…СЂР°РЅСЏС‚СЊ РІ РєРѕРґРёСЂРѕРІРєРµ ANSI**, Р±РµР· `chcp 65001` Рё Р±РµР·
-РєРёСЂРёР»Р»РёС†С‹ (РёРЅР°С‡Рµ РЅР° Win7: `The system cannot write to the specified device`).
+`install_esptool.bat` — **сохранять в кодировке ANSI**, без `chcp 65001` и без
+кириллицы (иначе на Win7: `The system cannot write to the specified device`).
 
     @echo off
     cd /d C:\Python311
@@ -131,17 +131,17 @@ esptool РЅСѓР¶РЅРѕР№ РІРµСЂСЃРёРё Рё РїРѕРґРјРµРЅРёС‚СЊ С‚СЂРё exe РІ РїР°РїРєРµ
     dir C:\Python311\Scripts\esp*.exe
     pause
 
-РџРѕС‡РµРјСѓ `--no-deps` РґР»СЏ esptool: РІ РµРіРѕ РјРµС‚Р°РґР°РЅРЅС‹С… `cryptography>=43.0.0`, Р° Сѓ РЅР°СЃ
-41.0.7. Р”Р»СЏ `elf2image` / `merge-bin` / `write-flash` cryptography РЅРµ РЅСѓР¶РЅР° вЂ”
-РїСЂРѕРІРµСЂРµРЅРѕ, СЂР°Р±РѕС‚Р°РµС‚. РџРѕРІРµРґРµРЅРёРµ cryptography 43+ РЅР° Win7 РЅРµ РїСЂРѕРІРµСЂСЏР»РѕСЃСЊ.
+Почему `--no-deps` для esptool: в его метаданных `cryptography>=43.0.0`, а у нас
+41.0.7. Для `elf2image` / `merge-bin` / `write-flash` cryptography не нужна —
+проверено, работает. Поведение cryptography 43+ на Win7 не проверялось.
 
-РћР¶РёРґР°РµРјРѕ: `esptool v5.1.0`, РІ `C:\Python311\Scripts` РїРѕСЏРІРёР»РёСЃСЊ
-`esptool.exe`, `espefuse.exe`, `espsecure.exe`, `esp_rfc2217_server.exe` (~108 РљР‘).
-РџСЂРµРґСѓРїСЂРµР¶РґРµРЅРёСЏ pip В«...is not on PATHВ» Р±РµР·РІСЂРµРґРЅС‹.
+Ожидаемо: `esptool v5.1.0`, в `C:\Python311\Scripts` появились
+`esptool.exe`, `espefuse.exe`, `espsecure.exe`, `esp_rfc2217_server.exe` (~108 КБ).
+Предупреждения pip «...is not on PATH» безвредны.
 
-## РЁР°Рі 5. РџРѕРґРјРµРЅР° СѓС‚РёР»РёС‚ РІ СЏРґСЂРµ
+## Шаг 5. Подмена утилит в ядре
 
-Р—Р°РєСЂС‹С‚СЊ Arduino IDE. `patch_arduino_esptool.bat` (ANSI):
+Закрыть Arduino IDE. `patch_arduino_esptool.bat` (ANSI):
 
     @echo off
     set ESP=%LOCALAPPDATA%\Arduino15\packages\esp32\tools\esptool_py\5.1.0
@@ -159,23 +159,23 @@ esptool РЅСѓР¶РЅРѕР№ РІРµСЂСЃРёРё Рё РїРѕРґРјРµРЅРёС‚СЊ С‚СЂРё exe РІ РїР°РїРєРµ
     esptool.exe version
     pause
 
-Р”РѕР»Р¶РЅРѕ РІС‹РІРµСЃС‚Рё `esptool v5.1.0` РёР· РїР°РїРєРё СЏРґСЂР°, Р±РµР· `PYI-ERROR`.
+Должно вывести `esptool v5.1.0` из папки ядра, без `PYI-ERROR`.
 
-## РЁР°Рі 6. РљРѕРјРїРёР»СЏС†РёСЏ
+## Шаг 6. Компиляция
 
-Р—Р°РїСѓСЃС‚РёС‚СЊ IDE, РІС‹Р±СЂР°С‚СЊ РїР»Р°С‚Сѓ (`ESP32S3 Dev Module` / `ESP32C5 Dev Module`),
-РІС‹СЃС‚Р°РІРёС‚СЊ Flash Mode / Size / PSRAM / Partition РїРѕРґ СЃРІРѕСЋ РїР»Р°С‚Сѓ,
-РІРєР»СЋС‡РёС‚СЊ В«РџРѕРєР°Р·Р°С‚СЊ РїРѕРґСЂРѕР±РЅС‹Р№ РІС‹РІРѕРґ РїСЂРё РєРѕРјРїРёР»СЏС†РёРёВ», СЃРѕР±СЂР°С‚СЊ.
+Запустить IDE, выбрать плату (`ESP32S3 Dev Module` / `ESP32C5 Dev Module`),
+выставить Flash Mode / Size / PSRAM / Partition под свою плату,
+включить «Показать подробный вывод при компиляции», собрать.
 
-### Р•СЃР»Рё РїР°РґР°РµС‚ `gen_esp32part.exe`
-РўРѕР¶Рµ PyInstaller. Р СЏРґРѕРј Р»РµР¶РёС‚ `gen_esp32part.py`
+### Если падает `gen_esp32part.exe`
+Тоже PyInstaller. Рядом лежит `gen_esp32part.py`
 (`%LOCALAPPDATA%\Arduino15\packages\esp32\hardware\esp32\3.3.5\tools\`).
-РЎРѕР·РґР°С‚СЊ С‚Р°Рј `gen_esp32part.bat`:
+Создать там `gen_esp32part.bat`:
 
     @echo off
     "C:\Python311\python.exe" "%~dp0gen_esp32part.py" %*
 
-Рё РІ `platform.txt` Р·Р°РјРµРЅРёС‚СЊ `gen_esp32part.exe` > `gen_esp32part.bat`.
+и в `platform.txt` заменить `gen_esp32part.exe` > `gen_esp32part.bat`.
 
 
 
@@ -183,46 +183,59 @@ esptool РЅСѓР¶РЅРѕР№ РІРµСЂСЃРёРё Рё РїРѕРґРјРµРЅРёС‚СЊ С‚СЂРё exe РІ РїР°РїРєРµ
 
 ## Troubleshooting
 
-| РЎРёРјРїС‚РѕРј | РџСЂРёС‡РёРЅР° / РґРµР№СЃС‚РІРёРµ |
+| Симптом | Причина / действие |
 |---|---|
-| `api-ms-win-core-path-l1-1-0.dll` РёР»Рё `python313.dll` РїСЂРё РєРѕРјРїРёР»СЏС†РёРё | Р’С‹Р·С‹РІР°РµС‚СЃСЏ РѕСЂРёРіРёРЅР°Р»СЊРЅС‹Р№ exe. РџСЂРѕРІРµСЂРёС‚СЊ: IDE Р±С‹Р»Р° Р·Р°РєСЂС‹С‚Р° РїСЂРё РїРѕРґРјРµРЅРµ; `esptool.exe` РІ РїР°РїРєРµ СЏРґСЂР° ~108 РљР‘, Р° РЅРµ ~13 РњР‘; РµСЃС‚СЊ `esptool_orig.bak.exe` |
-| `Failed to load ... python311.dll` | РќРµ С…РІР°С‚Р°РµС‚ UCRT / VC++ Redist (СЃРј. РўСЂРµР±РѕРІР°РЅРёСЏ) |
-| `WinError 10051` РїСЂРё pip РЅР° Python 3.11 | РЎРµС‚СЊ Сѓ РїР°С‚С‡РµРЅРЅРѕР№ СЃР±РѕСЂРєРё РЅРµ СЂР°Р±РѕС‚Р°РµС‚ вЂ” РєР°С‡Р°С‚СЊ РґСЂСѓРіРёРј Python (С€Р°Рі 3) |
-| `No matching distribution found for esptool==5.1.0 (from versions: none)` | РСЃРїРѕР»СЊР·РѕРІР°РЅ `--only-binary`, Р° Сѓ esptool РЅРµС‚ wheel. РљР°С‡Р°С‚СЊ СЃ `--no-binary :all:` |
-| `No matching distribution found for cryptography>=43.0.0` | Р—Р°Р±С‹С‚ `--no-deps` РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ esptool |
-| `No matching distribution found for <РїР°РєРµС‚>` РЅР° С€Р°РіРµ 4 | Р’ `C:\esptool_pack` РЅРµС‚ СЌС‚РѕРіРѕ wheel вЂ” РґРѕРєР°С‡Р°С‚СЊ |
-| pip СЃС‚Р°РІРёС‚ РЅРµ С‚СѓРґР° | Р’СЃРµРіРґР° `C:\Python311\python.exe -m pip ...`, РЅРµ РїСЂРѕСЃС‚Рѕ `pip` |
-| bat РїР°РґР°РµС‚ РЅР° РїРµСЂРІРѕРј `echo` | Р¤Р°Р№Р» РІ UTF-8 РёР»Рё РµСЃС‚СЊ `chcp 65001` вЂ” РїРµСЂРµСЃРѕС…СЂР°РЅРёС‚СЊ РІ ANSI |
+| `api-ms-win-core-path-l1-1-0.dll` или `python313.dll` при компиляции | Вызывается оригинальный exe. Проверить: IDE была закрыта при подмене; `esptool.exe` в папке ядра ~108 КБ, а не ~13 МБ; есть `esptool_orig.bak.exe` |
+| `Failed to load ... python311.dll` | Не хватает UCRT / VC++ Redist (см. Требования) |
+| `WinError 10051` при pip на Python 3.11 | Сеть у патченной сборки не работает — качать другим Python (шаг 3) |
+| `No matching distribution found for esptool==5.1.0 (from versions: none)` | Использован `--only-binary`, а у esptool нет wheel. Качать с `--no-binary :all:` |
+| `No matching distribution found for cryptography>=43.0.0` | Забыт `--no-deps` при установке esptool |
+| `No matching distribution found for <пакет>` на шаге 4 | В `C:\esptool_pack` нет этого wheel — докачать |
+| pip ставит не туда | Всегда `C:\Python311\python.exe -m pip ...`, не просто `pip` |
+| bat падает на первом `echo` | Файл в UTF-8 или есть `chcp 65001` — пересохранить в ANSI |
 
-## РћРіСЂР°РЅРёС‡РµРЅРёСЏ
+## Ограничения
 
-- Р›Р°СѓРЅС‡РµСЂС‹ СЃРѕРґРµСЂР¶Р°С‚ Р°Р±СЃРѕР»СЋС‚РЅС‹Р№ РїСѓС‚СЊ `C:\Python311\python.exe`. РџРµСЂРµРјРµСЃС‚РёС‚СЊ Python вЂ” СЃР»РѕРјР°СЋС‚СЃСЏ РІСЃРµ С‚СЂРё exe.
-- РћР±РЅРѕРІР»РµРЅРёРµ СЏРґСЂР° С‡РµСЂРµР· РњРµРЅРµРґР¶РµСЂ РїР»Р°С‚ Р·Р°РјРµРЅРёС‚ РїР°РїРєСѓ `esptool_py\<РІРµСЂСЃРёСЏ>` > РїРѕРІС‚РѕСЂРёС‚СЊ С€Р°РіРё 3вЂ“5 РїРѕРґ РЅРѕРІСѓСЋ РІРµСЂСЃРёСЋ esptool. РќРµ РЅР°Р¶РёРјР°С‚СЊ В«РћР±РЅРѕРІРёС‚СЊВ» РІ РјРµРЅРµРґР¶РµСЂРµ РїР»Р°С‚.
-- Secure Boot / Flash Encryption (`espsecure`, `espefuse`) СЃ cryptography 41 РЅРµ РїСЂРѕРІРµСЂСЏР»РёСЃСЊ.
+- Лаунчеры содержат абсолютный путь `C:\Python311\python.exe`. Переместить Python — сломаются все три exe.
+- Обновление ядра через Менеджер плат заменит папку `esptool_py\<версия>` > повторить шаги 3–5 под новую версию esptool. Не нажимать «Обновить» в менеджере плат.
+- Secure Boot / Flash Encryption (`espsecure`, `espefuse`) с cryptography 41 не проверялись.
 
-## Р‘РµРєР°Рї Рё РїРµСЂРµРЅРѕСЃ
+## Бекап и перенос
 
-РЎРѕС…СЂР°РЅРёС‚СЊ:
+Сохранить:
 
-    %LOCALAPPDATA%\Arduino15\     (РјРѕР¶РЅРѕ Р±РµР· РїРѕРґРїР°РїРєРё staging)
+    %LOCALAPPDATA%\Arduino15\     (можно без подпапки staging)
     C:\Python311\
     C:\esptool_pack\
-    <РїР°РїРєР° СЃРєРµС‚С‡РµР№>\libraries\    (РїСѓС‚СЊ вЂ” Р¤Р°Р№Р» > РќР°СЃС‚СЂРѕР№РєРё)
+    <папка скетчей>\libraries\    (путь — Файл > Настройки)
 
-Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РЅР° РґСЂСѓРіРѕРј РїРє Win7: РїРѕСЃС‚Р°РІРёС‚СЊ С‚Сѓ Р¶Рµ IDE, Р·Р°РїСѓСЃС‚РёС‚СЊ Рё Р·Р°РєСЂС‹С‚СЊ РѕРґРёРЅ СЂР°Р·,
-СЃРєРѕРїРёСЂРѕРІР°С‚СЊ `Arduino15` РїРѕРІРµСЂС…, СѓСЃС‚Р°РЅРѕРІРёС‚СЊ Python 3.11.18 **РІ С‚РѕС‚ Р¶Рµ РїСѓС‚СЊ**
-`C:\Python311`, РІС‹РїРѕР»РЅРёС‚СЊ С€Р°РіРё 4вЂ“5. РќР° Win10/11 РїРѕРґРјРµРЅР° РЅРµ РЅСѓР¶РЅР° вЂ”
-РІРµСЂРЅСѓС‚СЊ `*_orig.bak.exe` РѕР±СЂР°С‚РЅРѕ.
+Восстановление на другом пк Win7: поставить ту же IDE, запустить и закрыть один раз,
+скопировать `Arduino15` поверх, установить Python 3.11.18 **в тот же путь**
+`C:\Python311`, выполнить шаги 4–5. На Win10/11 подмена не нужна —
+вернуть `*_orig.bak.exe` обратно.
 
-## Р¤Р°Р№Р»С‹ СЂРµРїРѕР·РёС‚РѕСЂРёСЏ
+
+После применения фикса вам нужно подменить дирпкторию
+
+ESP=%LOCALAPPDATA%\Arduino15\packages\esp32\tools\esp-rv32\2511 на содержимое 
+
+https://github.com/espressif/crosstool-NG/releases/download/esp-13.2.0_20240530/riscv32-esp-elf-13.2.0_20240530-x86_64-w64-mingw32.zip
+или
+https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20241119/riscv32-esp-elf-14.2.0_20241119-x86_64-w64-mingw32.zip
+Просто удалите содержимое старой папки 2511 и распакуйте в нее содержимое одногоиз этих архиов.
+У меня скомпилился скетч на ESP32-C5 с содержимым riscv32-esp-elf-13.2.0_20240530-x86_64-w64-mingw32.zip
+
+
+
+## Файлы репозитория
 
     README.md       
-    esptool_pack/              (~8 РњР‘: wheel-С„Р°Р№Р»С‹ + esptool-5.1.0.tar.gz + РіРѕС‚РѕРІС‹Рµ exe esptool.exe... )
+    esptool_pack/              (~8 МБ: wheel-файлы + esptool-5.1.0.tar.gz + готовые exe esptool.exe... )
 
 
-## РЎСЃС‹Р»РєРё
+## Ссылки
 
-- РџР°С‚С‡РµРЅРЅС‹Р№ Python: https://github.com/adang1345/PythonWin7 (Рё https://github.com/adang1345/PythonVista)
+- Патченный Python: https://github.com/adang1345/PythonWin7 (и https://github.com/adang1345/PythonVista)
 - esptool: https://github.com/espressif/esptool
-- РЇРґСЂРѕ esp32: https://github.com/espressif/arduino-esp32
+- Ядро esp32: https://github.com/espressif/arduino-esp32
 - Arduino IDE 1.8.x: https://github.com/arduino/Arduino
